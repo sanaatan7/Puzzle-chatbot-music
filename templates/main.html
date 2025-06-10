@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./static/style.css">
+    <title>PuZzle Music</title>
+</head>
+<body>
+    <h1>Chat with PuZzle</h1>
+    <div id="chatBox" style="display:none;">
+        {% if bot_response %}
+            <p><strong>{{ bot_response }} </strong></p>
+            {% if song_data %}
+                <div>
+                    {% for name, url, art in song_data %}
+                        <div class="song">
+                            <img src="{{ art }}" alt="Album art">
+                            <a href="{{ url }}" target="_blank"> {{ name }} </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+    
+    <!-- User input form-->
+    <form id="userInput" onsubmit="submitForm(event)">
+        <input type="text" id="user_message" name="user_message" placeholder="Type here..." autocomplete="off" tabindex="1">
+        <button type="submit" id="submitBtn">PuZzle</button>
+    </form>
+    <!--<footer> &copy; Don't show your SASTA attitude</footer>-->
+    <script src="./static/index.js"></script>
+    <script>
+        // Remove any auto-focus on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            // Explicitly blur the input to prevent auto-focus
+            const userInput = document.getElementById('user_message');
+            if (userInput) {
+                userInput.blur();
+            }
+        });
+        // Show button when user input box is focused, hide when clicking outside
+        const userInput = document.getElementById('user_message');
+        const submitBtn = document.getElementById('submitBtn');
+        const chatBox = document.getElementById('chatBox');
+        if (userInput && submitBtn) {
+            userInput.addEventListener('focus', () => {
+                submitBtn.classList.add('visible');
+            });
+            // Hide button when clicking anywhere outside the input or button
+            document.addEventListener('mousedown', (e) => {
+                if (!userInput.contains(e.target) && !submitBtn.contains(e.target)) {
+                    submitBtn.classList.remove('visible');
+                }
+            });
+        }
+        // Show chatBox after submit
+        function showChatBox(event) {
+            event.preventDefault();
+            if (chatBox) {
+                chatBox.style.display = 'block';
+            }
+            // Call the original submitForm(event) to preserve backend logic
+            submitForm(event);
+        }
+    </script>
+</body>
+</html>
